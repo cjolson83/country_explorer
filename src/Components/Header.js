@@ -10,6 +10,7 @@ import {
   selectDisplay,
   deleteDisplayCountry,
 } from "../redux/slices/displayCountrySlice";
+import { setLoadingTrue, setLoadingFalse } from "../redux/slices/loadingSlice";
 
 const Header = () => {
   const [input, setInput] = useState();
@@ -31,6 +32,7 @@ const Header = () => {
         />
         <button
           onClick={() => {
+            dispatch(setLoadingTrue());
             axios
               .get(`https://restcountries.com/v3.1/name/${input}`)
               .then((res) => {
@@ -38,6 +40,7 @@ const Header = () => {
                 dispatch(deletePotentialCountries());
                 dispatch(setPotentialCountries(res.data));
                 dispatch(deleteDisplayCountry());
+                dispatch(setLoadingFalse());
               })
               .catch((err) => {
                 alert("No countries found that match your search!");

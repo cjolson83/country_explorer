@@ -1,15 +1,18 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectDisplay } from "../redux/slices/displayCountrySlice";
+import { setLoadingFalse, setLoadingTrue } from "../redux/slices/loadingSlice";
 
 const Weather = () => {
   const [weather, setWeather] = useState();
+  const dispatch = useDispatch();
   let display = useSelector(selectDisplay);
   let latitude = display.capitalInfo.latlng[0];
   let longitude = display.capitalInfo.latlng[1];
 
   useEffect(() => {
+    dispatch(setLoadingTrue);
     const options = {
       method: "GET",
       url: "https://weatherapi-com.p.rapidapi.com/current.json",
@@ -25,9 +28,11 @@ const Weather = () => {
       .then(function (response) {
         console.log(response.data);
         setWeather(response.data);
+        dispatch(setLoadingFalse);
       })
       .catch(function (error) {
         console.error(error);
+        dispatch(setLoadingFalse);
       });
   });
 
@@ -52,7 +57,7 @@ const Weather = () => {
         </tr>
         <tr>
           <td>Wind Speed: </td>
-          <td>{weather?.current?.wind_mph} mph{" "}</td>
+          <td>{weather?.current?.wind_mph} mph </td>
           <td>{weather?.current?.wind_dir}</td>
         </tr>
       </table>
